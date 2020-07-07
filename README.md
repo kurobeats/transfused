@@ -1,11 +1,11 @@
-# Transfuse
+# Transfused
 
-A small script to backup, compress, and restore your plasma desktop user configurations
+A friendly and inclusive fork of [this](https://gitlab.com/cscs/transfuse) small script to backup, compress, and restore your plasma desktop user configurations
 
 ### Download:
 
 ```shell
-git clone https://gitlab.com/cscs/transfuse.git
+git clone https://github.com/kurobeats/transfused.git
 ```
 ### Enter the directory:
 
@@ -16,7 +16,7 @@ cd transfuse
 ### Mark Executable:
 
 ```shell
-chmod +x transfuse.sh
+chmod +x transfused
 ```
 
 ### How to use:
@@ -26,7 +26,7 @@ chmod +x transfuse.sh
 #                                                                    #
 #   TRANSFUSE - a Script to Backup and Restore Plasma User Configs   #
 #                                                                    #
-#   transfuse.sh [option] [USER/PATIENT]                             #
+#   transfused [option] [USER/PATIENT]                             #
 #                                                                    #
 #   options:                                                         #
 #   help, -h, --help                               show brief help   #
@@ -46,13 +46,5 @@ chmod +x transfuse.sh
 
 Example usage:
 
-./transfuse.sh -b manjaroo
+./transfused -b manjaroo
 ```
-
-> Note: transfuse.sh will now present you with a menu if no argument is used
-
-### Donate  
-
-Everything is free, but you can donate using these:  
-
-<a href='https://ko-fi.com/X8X0VXZU' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a> &nbsp; <a href='https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M2AWM9FUFTD52'><img height='36' style='border:0px;height:36px;' src='https://gitlab.com/cscs/resources/raw/master/paypalkofi.png' border='0' alt='Donate with Paypal' />  
