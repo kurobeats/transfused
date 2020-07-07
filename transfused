@@ -9,7 +9,7 @@ HELP=$(echo " ";
        echo "#                                                                       #";
        echo "#   TRANSFUSED - a Script to Backup and Restore Plasma User Configs      #";
        echo "#                                                                       #";
-       echo "#   transfused [option] [USER/PATIENT]                                #";
+       echo "#   transfused [option] [USER]                                #";
        echo "#                                                                       #";
        echo "#   options:                                                            #";
        echo "#   help, -h, --help                                  show brief help   #";
@@ -18,7 +18,7 @@ HELP=$(echo " ";
        echo "#   backuproot, -BR, --backuproot                 backup root configs   #";
        echo "#   copy, -C, --copy USER                    copy but do not compress   #";
        echo "#   compress, -c, --compress                  compress copied configs   #";
-       echo "#   restore, -r, --restore PATIENT       restore configs /to/ PATIENT   #";
+       echo "#   restore, -r, --restore USER       restore configs /to/ USER   #";
        echo "#                                                                       #";
        echo "#                               ${underline}  NOTES  ${nounderline}                               #";
        echo "#   Environment Variable        CHARTS=1          More verbose output   #";
@@ -60,8 +60,8 @@ if [ $# -eq 0 ];
               ;;
           Restore,*|*,[rR]estore)
               echo ""
-              read -p "Please enter the name of the user to restore configs to: "  PATIENT
-              "$0" -r "$PATIENT";
+              read -p "Please enter the name of the user to restore configs to: "  USR
+              "$0" -r "$USR";
               break
               ;;
           Help,*|*,[hH]elp)
@@ -90,11 +90,11 @@ case "$1" in
    echo -e "\n Directory $HOME does not exist\n";
    exit;
   fi;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP";
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.config;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.kde;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.kde4;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.local/share;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde4;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
  rsync -rltD --ignore-missing-args $HOME/.config/auroraerc ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
  rsync -rltD --ignore-missing-args $HOME/.config/autostart-scripts ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
  rsync -rltD --ignore-missing-args $HOME/.config/autostart ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
@@ -139,7 +139,7 @@ case "$1" in
  rsync -rltD --ignore-missing-args $HOME/.local/share/plasma ./"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
  rsync -rltD --ignore-missing-args $HOME/.local/share/plasma_icons ./"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
   if [ -z "$COVERED" ]; then
-   mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.local/share/wallpapers;
+   mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/wallpapers;
    OLDFLWR=$(awk -F: '/\[Wallpaper\]/ && $0 != "" { getline; print substr($0,14,length($0)-13) }' $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc);
    AROSE=$(basename -- "$OLDFLWR");
    rsync -rltD --ignore-missing-args "$OLDFLWR" ./"$USR"_transfusion_"$TIMESTAMP"/.local/share/wallpapers;
@@ -156,7 +156,7 @@ case "$1" in
    tar -zcvf ./"$USR"_transfusion_"$TIMESTAMP".tar.gz ./"$USR"_transfusion_"$TIMESTAMP";
    } &> /dev/null;
   fi;
- rm -rf ./"$USR"_transfusion_"$TIMESTAMP";
+ rm -rf /tmp/"$USR"_transfusion_"$TIMESTAMP";
  echo -e "\nWe copied and compressed items recursively from:\n\n~\n~/.config\n~/.local/share\n\nThe compressed backup is timestamped and named "$USR"_transfusion_"$TIMESTAMP".tar.gz\n" ;
  else 
  echo -e "\n I dont know what to do";
@@ -174,10 +174,10 @@ case "$1" in
    echo -e "\n Directory $HOME does not exist\n";
    exit;
   fi;
-  mkdir -p ./"$USR"_transfusion_"$TIMESTAMP";
-  mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.config;
-  mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.kde;
-  mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.local/share;
+  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
+  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
+  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
+  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
   rsync -rltD --ignore-missing-args $HOME/.config/auroraerc ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
   rsync -rltD --ignore-missing-args $HOME/.config/gtk-3.0 ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
   rsync -rltD --ignore-missing-args $HOME/.config/kdeglobals ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
@@ -206,7 +206,7 @@ case "$1" in
    tar -zcvf ./"$USR"_transfusion_T-"$TIMESTAMP".tar.gz ./"$USR"_transfusion_"$TIMESTAMP";
    } &> /dev/null;
   fi;
- rm -rf ./"$USR"_transfusion_"$TIMESTAMP";
+ rm -rf /tmp/"$USR"_transfusion_"$TIMESTAMP";
  echo -e "\nWe copied and compressed items recursively from:\n\n~\n~/.config\n~/.local/share\n\nThe compressed backup is timestamped and named "$USR"_transfusion_T-"$TIMESTAMP".tar.gz" ;
  echo -e "\nThis is a 'topical' backup. Only the minimum of themes and aesthetics are saved.\n"
  else 
@@ -218,8 +218,8 @@ case "$1" in
 
 -BR|backuproot|--backuproot)
 
- mkdir -p ./root_transfusion_"$TIMESTAMP";
- mkdir -p ./root_transfusion_"$TIMESTAMP"/usr/share;
+ mkdir -p /tmp/root_transfusion_"$TIMESTAMP";
+ mkdir -p /tmp/root_transfusion_"$TIMESTAMP"/usr/share;
  rsync -av --ignore-missing-args /usr/share/aurorae ./root_transfusion_"$TIMESTAMP"/usr/share/;
  rsync -av --ignore-missing-args /usr/share/color-schemes ./root_transfusion_"$TIMESTAMP"/usr/share/;
  rsync -av --ignore-missing-args /usr/share/icons ./root_transfusion_"$TIMESTAMP"/usr/share/;
@@ -239,7 +239,7 @@ case "$1" in
    tar -zcvf ./root_transfusion_"$TIMESTAMP".tar.gz ./root_transfusion_"$TIMESTAMP";
    } &> /dev/null;
   fi;
- rm -rf ./root_transfusion_"$TIMESTAMP";
+ rm -rf /tmp/root_transfusion_"$TIMESTAMP";
  echo -e "\n\nWe copied and compressed items recursively from:\n\n/usr/share/\n\nThe compressed backup is named root_transfusion_"$TIMESTAMP".tar.gz\n";
  exit;; # backup and squish
 
@@ -253,11 +253,11 @@ case "$1" in
    exit;
   fi;
  {
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP";
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.config;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.kde;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.kde4;
- mkdir -p ./"$USR"_transfusion_"$TIMESTAMP"/.local/share;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde4;
+ mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
  rsync -rltD --ignore-missing-args $HOME/.config/auroraerc ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
  rsync -rltD --ignore-missing-args $HOME/.config/autostart-scripts ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
  rsync -rltD --ignore-missing-args $HOME/.config/autostart ./"$USR"_transfusion_"$TIMESTAMP"/.config/;
@@ -371,9 +371,9 @@ case "$1" in
         ;;
     esac
   done
-  PATIENT=$(echo $1 | sed -e 's/^[^ ]* //g')
-    if [ ! -d "/home/$PATIENT" ]; then
-     echo -e "\n Directory /home/$PATIENT does not exist\n";
+  USER=$(echo $1 | sed -e 's/^[^ ]* //g')
+    if [ ! -d "/home/$USR" ]; then
+     echo -e "\n Directory /home/$USR does not exist\n";
      exit;
     fi;
     if [ ! -f "$opt" ]; then
@@ -381,13 +381,13 @@ case "$1" in
      exit;
     fi;
  echo " ";
- read -p "Are you sure you would like to restore "$opt" to /home/$PATIENT/? (Y/N) " -n 1 -r ;
+ read -p "Are you sure you would like to restore "$opt" to /home/$USR/? (Y/N) " -n 1 -r ;
  echo " ";
   if [[ ! $REPLY =~ ^[Yy]$ ]];
    then exit 1;
   fi;
   if [ -z "$COVERED" ]; then
-  sed -i '/Contain.*\[Wallpaper\]/!b;n;cImage=file:///home/'"$PATIENT"'/.local/share/wallpapers/flowers' /home/"$PATIENT"/.config/plasma-org.kde.plasma.desktop-appletsrc;
+  sed -i '/Contain.*\[Wallpaper\]/!b;n;cImage=file:///home/'"$USR"'/.local/share/wallpapers/flowers' /home/"$USR"/.config/plasma-org.kde.plasma.desktop-appletsrc;
   else
   echo -e '\n You are "Covered", meaning no change will be made to configured wallpaper selection.';
   echo -e 'That, or there was an error.';
@@ -397,14 +397,14 @@ case "$1" in
    mkdir -p /tmp/transfusion;
    tar -xzvf "$opt" -C /tmp/transfusion/;
    COPYF=/tmp/transfusion/${opt::-7}
-   rsync -rltDii --ignore-missing-args $COPYF/ --include=".*" /home/$PATIENT/;
+   rsync -rltDii --ignore-missing-args $COPYF/ --include=".*" /home/$USR/;
    rm -rf "$COPYF" ;
    else
    {
    mkdir -p /tmp/transfusion;
    tar -xzvf "$opt" -C /tmp/transfusion;
    COPYF=/tmp/transfusion/${opt::-7}
-   rsync -rltD --ignore-missing-args $COPYF/ --include=".*" /home/$PATIENT/;
+   rsync -rltD --ignore-missing-args $COPYF/ --include=".*" /home/$USR/;
    rm -rf "$COPYF" ;
    } &> /dev/null ;
   fi;
