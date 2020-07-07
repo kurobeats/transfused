@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #                        transfused                       #
 ## Automates backing up and restoring Plasma user configs   #
-#####                        cscs                       #####
+#####                        no names                       #####
 underline=`tput smul`
 nounderline=`tput rmul`
 HELP=$(echo " ";
