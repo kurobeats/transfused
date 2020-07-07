@@ -47,13 +47,13 @@ if [ $# -eq 0 ];
       case "$opt,$REPLY" in
           Backup,*|*,[bB]ackup)
               echo ""
-              read -p "Please enter the name of the user to backup and compress configs from: "  YOU
+              read -p "Please enter the name of the user to backup and compress configs from: "  USR
               "$0" -b "$USR";
               break
               ;;
           Copy,*|*,[cC]opy)
               echo ""
-              read -p "Please enter the name of the user to copy configs from: "  YOU
+              read -p "Please enter the name of the user to copy configs from: "  USR
               "$0" -C "$USR";
               break
               ;;
@@ -172,7 +172,7 @@ case "$1" in
 
  shift
  if test $# -gt 0; then
- YOU=`echo $1 | sed -e 's/^[^ ]* //g'`
+ USR=`echo $1 | sed -e 's/^[^ ]* //g'`
   if [ ! -d "$HOME" ]; then
    echo -e "\n Directory $HOME does not exist\n";
    exit;
@@ -250,7 +250,7 @@ case "$1" in
 
  shift
  if test $# -gt 0; then
- YOU=`echo $1 | sed -e 's/^[^ ]* //g'`
+ USR=`echo $1 | sed -e 's/^[^ ]* //g'`
   if [ ! -d "$HOME" ]; then
    echo -e "\n Directory $HOME does not exist\n";
    exit;
