@@ -4,6 +4,9 @@
 #####                        no names                       #####
 underline=`tput smul`
 nounderline=`tput rmul`
+USR=`echo $1 | sed -e 's/^[^ ]* //g'`
+TIMESTAMP=$(date +"%Y%m%d_%H%M")
+
 HELP=$(echo " ";
        echo "#########################################################################";
        echo "#                                                                       #";
@@ -15,7 +18,6 @@ HELP=$(echo " ";
        echo "#   help, -h, --help                                  show brief help   #";
        echo "#   backup, -b, --backup USER                     backup USER configs   #";
        echo "#   backuptopical, -bt, --backupt USER         backup USER appearance   #";
-       echo "#   backuproot, -BR, --backuproot                 backup root configs   #";
        echo "#   copy, -C, --copy USER                    copy but do not compress   #";
        echo "#   compress, -c, --compress                  compress copied configs   #";
        echo "#   restore, -r, --restore USER       restore configs /to/ USER   #";
@@ -26,12 +28,26 @@ HELP=$(echo " ";
        echo "#                                                                       #";
        echo "#########################################################################";
        echo " ";)
-TIMESTAMP=$(date +"%Y%m%d_%H%M")
-# We dont need no stinkin coppers.
+
 if [ "$EUID" = 0 ];
   then echo -e "\n Do not run this script as root!\n";
   exit;
 fi
+
+setup_sync() {
+	mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
+	mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
+	rsync -rltD --ignore-missing-args $HOME/.config /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
+	rsync -rltD --ignore-missing-args $HOME/.gtkrc-2.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
+	rsync -rltD --ignore-missing-args $HOME/.kde /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
+	rsync -rltD --ignore-missing-args $HOME/.kde4 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/aurorae /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/color-schemes /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/konsole /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/kxmlgui5/ /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/plasma /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+	rsync -rltD --ignore-missing-args $HOME/.local/share/plasma_icons /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+} 
 
 if [ $# -eq 0 ]; 
   then echo "";
@@ -85,59 +101,11 @@ case "$1" in
 
  shift
  if test $# -gt 0; then
- USR=`echo $1 | sed -e 's/^[^ ]* //g'`
   if [ ! -d "$HOME" ]; then
    echo -e "\n Directory $HOME does not exist\n";
    exit;
   fi;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde4;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
- rsync -rltD --ignore-missing-args $HOME/.config/auroraerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/autostart-scripts /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/autostart /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/breezerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/dolphinrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/gtk-3.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katemetainfos /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kateschemarc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katevirc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kde.org /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kdeconnect /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kdeglobals /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kglobalshortcutsrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/khotkeysrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/konsolerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kscreenlockerrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/ksplashrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kvantum /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kwinrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kwinrulesrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/latte /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/lattedockrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma-workspace /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma_calendar_holiday_regions /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasmarc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasmashellrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/powermanagementprofilesrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/pulse/*.conf /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/pulse/;
- rsync -rltD --ignore-missing-args $HOME/.config/qtcurve /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/Trolltech.conf /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.gtkrc-2.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.kde /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.kde4 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/aurorae /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/color-schemes /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kate /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/konsole /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kservices5 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kxmlgui5/ /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/plasma /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/plasma_icons /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+  setup_sync
   if [ -z "$COVERED" ]; then
    mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/wallpapers;
    OLDFLWR=$(awk -F: '/\[Wallpaper\]/ && $0 != "" { getline; print substr($0,14,length($0)-13) }' $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc);
@@ -169,35 +137,11 @@ case "$1" in
 
  shift
  if test $# -gt 0; then
- USR=`echo $1 | sed -e 's/^[^ ]* //g'`
   if [ ! -d "$HOME" ]; then
    echo -e "\n Directory $HOME does not exist\n";
    exit;
   fi;
-  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
-  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
-  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
-  mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
-  rsync -rltD --ignore-missing-args $HOME/.config/auroraerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/gtk-3.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/kdeglobals /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/kscreenlockerrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/ksplashrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/kvantum /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/kwinrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/latte /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/lattedockrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/plasmarc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/qtcurve /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.config/Trolltech.conf /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
-  rsync -rltD --ignore-missing-args $HOME/.gtkrc-2.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
-  rsync -rltD --ignore-missing-args $HOME/.kde /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/aurorae /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/color-schemes /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/konsole /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/kxmlgui5/ /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/plasma /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
-  rsync -rltD --ignore-missing-args $HOME/.local/share/plasma_icons /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+  setup_sync
   if [[ $CHARTS -eq 1 ]]; 
    then
    tar -zcvf ./"$USR"_transfusion_T-"$TIMESTAMP".tar.gz /tmp/"$USR"_transfusion_"$TIMESTAMP";
@@ -216,91 +160,16 @@ case "$1" in
  fi;
  shift;; # backup and squish
 
--BR|backuproot|--backuproot)
-
- mkdir -p /tmp/root_transfusion_"$TIMESTAMP";
- mkdir -p /tmp/root_transfusion_"$TIMESTAMP"/usr/share;
- rsync -av --ignore-missing-args /usr/share/aurorae /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/color-schemes /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/icons /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/kde-gtk-config /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/kde4 /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/konsole /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/Kvantum /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/plasma /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/sddm /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/themes /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
- rsync -av --ignore-missing-args /usr/share/wallpapers /tmp/root_transfusion_"$TIMESTAMP"/usr/share/;
-  if [[ $CHARTS -eq 1 ]]; 
-   then
-   tar -zcvf ./root_transfusion_"$TIMESTAMP".tar.gz /tmp/root_transfusion_"$TIMESTAMP";
-   else
-   {
-   tar -zcvf ./root_transfusion_"$TIMESTAMP".tar.gz /tmp/root_transfusion_"$TIMESTAMP";
-   } &> /dev/null;
-  fi;
- rm -rf /tmp/root_transfusion_"$TIMESTAMP";
- echo -e "\n\nWe copied and compressed items recursively from:\n\n/usr/share/\n\nThe compressed backup is named root_transfusion_"$TIMESTAMP".tar.gz\n";
- exit;; # backup and squish
-
 -C|copy|--copy)
 
  shift
  if test $# -gt 0; then
- USR=`echo $1 | sed -e 's/^[^ ]* //g'`
   if [ ! -d "$HOME" ]; then
    echo -e "\n Directory $HOME does not exist\n";
    exit;
   fi;
  {
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP";
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.kde4;
- mkdir -p /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share;
- rsync -rltD --ignore-missing-args $HOME/.config/auroraerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/autostart-scripts /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/autostart /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/breezerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/dolphinrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/gtk-3.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katemetainfos /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kateschemarc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/katevirc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kde.org /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kdeconnect /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kdeglobals /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kglobalshortcutsrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/khotkeysrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/konsolerc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kscreenlockerrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/ksplashrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kvantum /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kwinrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/kwinrulesrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/latte /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/lattedockrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma-workspace /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasma_calendar_holiday_regions /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasmarc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/plasmashellrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/powermanagementprofilesrc /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/pulse/*.conf /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/pulse/;
- rsync -rltD --ignore-missing-args $HOME/.config/qtcurve /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.config/trolltech.conf /tmp/"$USR"_transfusion_"$TIMESTAMP"/.config/;
- rsync -rltD --ignore-missing-args $HOME/.gtkrc-2.0 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.kde /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.kde4 /tmp/"$USR"_transfusion_"$TIMESTAMP"/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/aurorae /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/color-schemes /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kate /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/konsole /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kservices5 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/kxmlgui5 /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/plasma /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
- rsync -rltD --ignore-missing-args $HOME/.local/share/plasma_icons /tmp/"$USR"_transfusion_"$TIMESTAMP"/.local/share/;
+ setup_sync
  } &> /dev/null;
  echo -e "\n\nWe copied items recursively from:\n\n~\n~/.config\n~/.local/share\n\nThe new directory is timestamped and named "$USR"_transfusion_"$TIMESTAMP"\n" ;
  else
